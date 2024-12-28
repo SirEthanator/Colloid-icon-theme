@@ -62,6 +62,7 @@ install() {
       cp -r "${SRC_DIR}"/notint/*.svg                                                       "${THEME_DIR}"/places/scalable
     fi
 
+    # symbolic icons will not follow scheme in light mode
     symbolic_color='#dedede'  # Fallback if not set in colors_folder
     colors_folder
 
@@ -307,7 +308,7 @@ colors_folder() {
         theme_color='#8caaee'
         ;;
       -Purple)
-        theme_color='#ca9ee6'
+        theme_color='#b4befe'
         ;;
       -Pink)
         theme_color='#f4b8e4'
