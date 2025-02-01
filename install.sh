@@ -16,7 +16,7 @@ SRC_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 THEME_NAME=Colloid
 THEME_VARIANTS=('' '-Purple' '-Pink' '-Red' '-Orange' '-Yellow' '-Green' '-Teal' '-Grey')
-SCHEME_VARIANTS=('' '-Nord' '-Dracula' '-Gruvbox' '-Everforest' '-Catppuccin')
+SCHEME_VARIANTS=('' '-Nord' '-Dracula' '-Gruvbox' '-Everforest' '-Catppuccin' '-Rosepine')
 COLOR_VARIANTS=('-Light' '-Dark' '')
 
 themes=()
@@ -30,7 +30,7 @@ cat << EOF
   OPTIONS:
     -d, --dest DIR          Specify destination directory (Default: $DEST_DIR)
     -n, --name NAME         Specify theme name (Default: $THEME_NAME)
-    -s, --scheme VARIANTS   Specify folder colorscheme variant(s) [default|nord|dracula|gruvbox|everforest|catppuccin|all]
+    -s, --scheme VARIANTS   Specify folder colorscheme variant(s) [default|nord|dracula|gruvbox|everforest|catppuccin|rosepine|all]
     -t, --theme VARIANTS    Specify folder color theme variant(s) [default|purple|pink|red|orange|yellow|green|teal|grey|all] (Default: blue)
     -notint, --notint       Disable Follow ColorSheme for folders on KDE Plasma
     -r, --remove, -u, --uninstall   Remove/Uninstall $THEME_NAME icon themes
@@ -62,6 +62,8 @@ install() {
       cp -r "${SRC_DIR}"/notint/*.svg                                                       "${THEME_DIR}"/places/scalable
     fi
 
+    # symbolic icons will not follow scheme in light mode
+    symbolic_color='#dedede'  # Fallback if not set in colors_folder
     colors_folder
 
     if [[ "${scheme}" != '' || "${theme}" != '' ]]; then
@@ -77,7 +79,7 @@ install() {
     mkdir -p                                                                                "${THEME_DIR}"/{apps,categories,devices,emblems,mimetypes,places,status}
     cp -r "${SRC_DIR}"/src/actions                                                          "${THEME_DIR}"
     cp -r "${SRC_DIR}"/src/apps/{22,symbolic}                                               "${THEME_DIR}"/apps
-    cp -r "${SRC_DIR}"/src/categories/symbolic                                              "${THEME_DIR}"/categories
+    cp -r "${SRC_DIR}"/src/categories/{22,symbolic}                                         "${THEME_DIR}"/categories
     cp -r "${SRC_DIR}"/src/emblems/symbolic                                                 "${THEME_DIR}"/emblems
     cp -r "${SRC_DIR}"/src/mimetypes/symbolic                                               "${THEME_DIR}"/mimetypes
     cp -r "${SRC_DIR}"/src/devices/{16,22,24,32,symbolic}                                   "${THEME_DIR}"/devices
@@ -85,17 +87,17 @@ install() {
     cp -r "${SRC_DIR}"/src/status/{16,22,24,symbolic}                                       "${THEME_DIR}"/status
 
     # Change icon color for dark theme
-    sed -i "s/#363636/#dedede/g" "${THEME_DIR}"/{actions,devices,places,status}/{16,22,24}/*.svg
-    sed -i "s/#363636/#dedede/g" "${THEME_DIR}"/{actions,devices}/32/*.svg
-    sed -i "s/#363636/#dedede/g" "${THEME_DIR}"/apps/22/*.svg
-    sed -i "s/#363636/#dedede/g" "${THEME_DIR}"/{actions,apps,categories,devices,emblems,mimetypes,places,status}/symbolic/*.svg
+    sed -i "s/#363636/${symbolic_color}/g" "${THEME_DIR}"/{actions,devices,places,status}/{16,22,24}/*.svg
+    sed -i "s/#363636/${symbolic_color}/g" "${THEME_DIR}"/{actions,devices}/32/*.svg
+    sed -i "s/#363636/${symbolic_color}/g" "${THEME_DIR}"/apps/22/*.svg
+    sed -i "s/#363636/${symbolic_color}/g" "${THEME_DIR}"/{actions,apps,categories,devices,emblems,mimetypes,places,status}/symbolic/*.svg
 
     cp -r "${SRC_DIR}"/links/actions/{16,22,24,32,symbolic}                                 "${THEME_DIR}"/actions
     cp -r "${SRC_DIR}"/links/devices/{16,22,24,32,symbolic}                                 "${THEME_DIR}"/devices
     cp -r "${SRC_DIR}"/links/places/{16,22,24,symbolic}                                     "${THEME_DIR}"/places
     cp -r "${SRC_DIR}"/links/status/{16,22,24,symbolic}                                     "${THEME_DIR}"/status
     cp -r "${SRC_DIR}"/links/apps/{22,symbolic}                                             "${THEME_DIR}"/apps
-    cp -r "${SRC_DIR}"/links/categories/symbolic                                            "${THEME_DIR}"/categories
+    cp -r "${SRC_DIR}"/links/categories/{22,symbolic}                                       "${THEME_DIR}"/categories
     cp -r "${SRC_DIR}"/links/mimetypes/symbolic                                             "${THEME_DIR}"/mimetypes
 
     cd "${dest}"
@@ -168,6 +170,7 @@ colors_folder() {
   esac
 
   if [[ "$scheme" == '-Nord' ]]; then
+    symbolic_color='#eceff4'
     case "$theme" in
       '')
         theme_color='#89a3c2'
@@ -200,6 +203,7 @@ colors_folder() {
   fi
 
   if [[ "$scheme" == '-Dracula' ]]; then
+    symbolic_color='#f8f8f2'
     case "$theme" in
       '')
         theme_color='#6272a4'
@@ -232,6 +236,7 @@ colors_folder() {
   fi
 
   if [[ "$scheme" == '-Gruvbox' ]]; then
+    symbolic_color='#ebdbb2'
     case "$theme" in
       '')
         theme_color='#83a598'
@@ -264,15 +269,16 @@ colors_folder() {
   fi
 
   if [[ "$scheme" == '-Everforest' ]]; then
+    symbolic_color='#D3C6AA'
     case "$theme" in
       '')
-        theme_color='#7fbbb3'
+        theme_color='#7FBBB3'
         ;;
       -Purple)
         theme_color='#D699B6'
         ;;
       -Pink)
-        theme_color='#d3869b'
+        theme_color='#D3869B'
         ;;
       -Red)
         theme_color='#E67E80'
@@ -290,18 +296,19 @@ colors_folder() {
         theme_color='#83C092'
         ;;
       -Grey)
-        theme_color='#7a8478'
+        theme_color='#7A8478'
         ;;
     esac
   fi
 
   if [[ "$scheme" == '-Catppuccin' ]]; then
+    symbolic_color='#cdd6f4'
     case "$theme" in
       '')
         theme_color='#8caaee'
         ;;
       -Purple)
-        theme_color='#ca9ee6'
+        theme_color='#b4befe'
         ;;
       -Pink)
         theme_color='#f4b8e4'
@@ -323,6 +330,39 @@ colors_folder() {
         ;;
       -Grey)
         theme_color='#7c7f93'
+        ;;
+    esac
+  fi
+
+  if [[ "$scheme" == '-Rosepine' ]]; then
+    symbolic_color='#e0def4'
+    case "$theme" in
+      '')
+        theme_color='#31748f'
+        ;;
+      -Purple)
+        theme_color='#c4a7e7'
+        ;;
+      -Pink)
+        theme_color='#f5bde6'
+        ;;
+      -Red)
+        theme_color='#eb6f92'
+        ;;
+      -Orange)
+        theme_color='#ebbcba'
+        ;;
+      -Yellow)
+        theme_color='#f6c177'
+        ;;
+      -Green)
+        theme_color='#a6d189'
+        ;;
+      -Teal)
+        theme_color='#9ccfd8'
+        ;;
+      -Grey)
+        theme_color='#908caa'
         ;;
     esac
   fi
@@ -380,6 +420,11 @@ while [[ "$#" -gt 0 ]]; do
           catppuccin)
             schemes+=("${SCHEME_VARIANTS[5]}")
             echo -e "\nCatppuccin ColorScheme version! ...\n"
+            shift
+            ;;
+          rosepine)
+            schemes+=("${SCHEME_VARIANTS[6]}")
+            echo -e "\nRose Pine ColorScheme version! ...\n"
             shift
             ;;
           all)
@@ -508,7 +553,7 @@ install_theme() {
   done
 }
 
-#clean_old_theme
+clean_old_theme
 
 if [[ "${remove}" == 'true' ]]; then
   remove_theme
