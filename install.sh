@@ -16,7 +16,7 @@ SRC_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 THEME_NAME=Colloid
 THEME_VARIANTS=('' '-Purple' '-Pink' '-Red' '-Orange' '-Yellow' '-Green' '-Teal' '-Grey')
-SCHEME_VARIANTS=('' '-Nord' '-Dracula' '-Gruvbox' '-Everforest' '-Catppuccin' '-Rosepine')
+SCHEME_VARIANTS=('' '-Nord' '-Dracula' '-Gruvbox' '-Everforest' '-Catppuccin' '-Rosepine' '-Material')
 COLOR_VARIANTS=('-Light' '-Dark' '')
 
 themes=()
@@ -30,7 +30,7 @@ cat << EOF
   OPTIONS:
     -d, --dest DIR          Specify destination directory (Default: $DEST_DIR)
     -n, --name NAME         Specify theme name (Default: $THEME_NAME)
-    -s, --scheme VARIANTS   Specify folder colorscheme variant(s) [default|nord|dracula|gruvbox|everforest|catppuccin|rosepine|all]
+    -s, --scheme VARIANTS   Specify folder colorscheme variant(s) [default|nord|dracula|gruvbox|everforest|catppuccin|rosepine|material|all]
     -t, --theme VARIANTS    Specify folder color theme variant(s) [default|purple|pink|red|orange|yellow|green|teal|grey|all] (Default: blue)
     -b, --bold              Install bolder panel icons version (1.5px size)
     -notint, --notint       Disable Follow ColorSheme for folders on KDE Plasma
@@ -386,6 +386,41 @@ colors_folder() {
         ;;
     esac
   fi
+
+  if [[ "$scheme" == '-Material' ]]; then
+    . "$HOME/material_colours"
+
+    symbolic_color="$material_d_on_surface"
+    case "$theme" in
+      '')
+        theme_color="$material_d_primary"
+        ;;
+      -Purple)
+        theme_color="$material_d_purple"
+        ;;
+      -Pink)
+        theme_color="$material_d_magenta"
+        ;;
+      -Red)
+        theme_color="$material_d_red"
+        ;;
+      -Orange)
+        theme_color="$material_d_orange"
+        ;;
+      -Yellow)
+        theme_color="$material_d_yellow"
+        ;;
+      -Green)
+        theme_color="$material_d_green"
+        ;;
+      -Teal)
+        theme_color="$material_d_cyan"
+        ;;
+      -Grey)
+        theme_color="$material_d_grey"
+        ;;
+    esac
+  fi
 }
 
 while [[ "$#" -gt 0 ]]; do
@@ -450,6 +485,11 @@ while [[ "$#" -gt 0 ]]; do
           rosepine)
             schemes+=("${SCHEME_VARIANTS[6]}")
             echo -e "\nRose Pine ColorScheme version! ...\n"
+            shift
+            ;;
+          material)
+            schemes+=("${SCHEME_VARIANTS[7]}")
+            echo -e "\nMaterial ColorScheme version! ...\n"
             shift
             ;;
           all)
